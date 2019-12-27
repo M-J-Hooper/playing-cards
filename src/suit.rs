@@ -1,6 +1,9 @@
 use crate::error::ParseError;
 use std::str;
+use std::cmp;
+use std::hash;
 
+#[derive(cmp::Eq, cmp::PartialEq, hash::Hash)]
 pub enum Suit {
     Hearts,
     Diamonds,

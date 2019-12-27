@@ -10,7 +10,10 @@ pub struct ParseError {
 
 impl ParseError {
     pub fn new(input: &str, message: &str) -> ParseError {
-        ParseError{input: input.to_owned(), message: message.to_owned()}
+        ParseError { 
+            input: input.to_owned(), 
+            message: message.to_owned()
+        }
     }
 }
 

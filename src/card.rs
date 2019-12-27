@@ -2,15 +2,18 @@ use crate::suit::Suit;
 use crate::error::ParseError;
 use std::str;
 use std::fmt;
+use std::cmp;
+use std::hash;
 
+#[derive(cmp::Eq, cmp::PartialEq, hash::Hash)]
 pub struct Card {
     number: usize,
     suit: Suit,
 }
 
 impl Card {
-    fn new(number: usize, suit: Suit) -> Card {
-        Card{number, suit}
+    pub fn new(number: usize, suit: Suit) -> Card {
+        Card { number, suit }
     }
 
     fn fmt_number(&self) -> String {
@@ -26,7 +29,7 @@ impl Card {
 
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} {}", self.fmt_number(), self.suit.get_initial())
+        write!(f, "{}-{}", self.fmt_number(), self.suit.get_initial())
     }
 }
 
@@ -34,7 +37,7 @@ impl str::FromStr for Card {
     type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let v: Vec<&str> = s.split(" ").collect();
+        let v: Vec<&str> = s.split("-").collect();
         if v.len() != 2 {
             Err(ParseError::new(s, "A card string must have 2 parts: suit and number"))
         } else {
