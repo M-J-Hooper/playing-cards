@@ -41,20 +41,19 @@ impl str::FromStr for Card {
         if v.len() != 2 {
             Err(ParseError::new(s, "A card string must have 2 parts: suit and number"))
         } else {
-            let n = match v[0] {
-                "A" => 1,
-                "J" => 11,
-                "Q" => 12,
-                "K" => 13,
-                _ => v[0].parse().unwrap(), // TODO: Unwrap -> ?
+            let n: usize = match v[0].parse() {
+                Ok(x) if x > 1 && x < 11 => x,
+                _ => match v[0] {
+                    "A" => 1,
+                    "J" => 11,
+                    "Q" => 12,
+                    "K" => 13,
+                    _ => return Err(ParseError::new(s, "Invlid face card initial")),
+                },
             };
 
-            if n < 1 || n > 13 {
-                Err(ParseError::new(s, "A card number must be between 1 and 13 inclusive"))
-            } else {
-                let suit = Suit::from_str(v[1])?;
-                Ok(Card::new(n, suit))
-            }
+            let suit = Suit::from_str(v[1])?;
+            Ok(Card::new(n, suit))
         }
     }
 }
