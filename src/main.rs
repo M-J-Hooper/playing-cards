@@ -17,4 +17,4 @@ fn main() {
         p.deal(deck.draw().unwrap());
     }
     println!("Next up: {}", p);
-}
+}   

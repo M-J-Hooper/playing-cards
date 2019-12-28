@@ -37,3 +37,43 @@ impl IntoIterator for Deck {
         self.0.into_iter()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::collections::HashSet;
+
+    #[test]
+    fn iter() {
+        let deck = Deck::new();
+        let mut n = 0;
+        for _ in deck {
+            n += 1;
+        }
+        assert_eq!(n, 52);
+    }
+
+    #[test]
+    fn unique() {
+        let mut set: HashSet<Card> = HashSet::new();
+        let mut deck = Deck::new();
+        loop {
+            let c = match deck.draw() {
+                Some(x) => x,
+                None => break,
+            };
+            assert!(!set.contains(&c));
+            set.insert(c);
+        }
+    }
+
+    #[test]
+    fn shuffle() {
+        let card = Deck::new().draw().unwrap();
+        let limit = 1000;
+        let mut n = 0;
+        while card == Deck::new().draw().unwrap() && n < limit {
+            n += 1;
+        }
+    }
+}

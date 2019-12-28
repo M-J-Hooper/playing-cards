@@ -3,7 +3,7 @@ use std::str;
 use std::cmp;
 use std::hash;
 
-#[derive(cmp::Eq, cmp::PartialEq, hash::Hash)]
+#[derive(Clone, Debug, cmp::Eq, cmp::PartialEq, hash::Hash)]
 pub enum Suit {
     Hearts,
     Diamonds,
@@ -45,5 +45,16 @@ impl str::FromStr for Suit {
             "S" => Ok(Self::Spades),
             _ => Err(ParseError::new(s, "Invalid suit initial")),
         } 
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hearts_colour() {
+        assert!(Suit::Hearts.is_red());
+        assert!(!Suit::Hearts.is_black());
     }
 }

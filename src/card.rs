@@ -5,7 +5,7 @@ use std::fmt;
 use std::cmp;
 use std::hash;
 
-#[derive(cmp::Eq, cmp::PartialEq, hash::Hash)]
+#[derive(Clone, Debug, cmp::Eq, cmp::PartialEq, hash::Hash)]
 pub struct Card {
     number: usize,
     suit: Suit,
@@ -55,5 +55,31 @@ impl str::FromStr for Card {
             let suit = Suit::from_str(v[1])?;
             Ok(Card::new(n, suit))
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::str::FromStr;
+
+    #[test]
+    fn from_str() {
+        let card = Card::from_str("A-S").unwrap();
+        assert_eq!(card, Card::new(1, Suit::Spades))
+    }
+
+    #[test]
+    fn to_string() {
+        let card = Card::new(13, Suit::Diamonds);
+        assert_eq!(card.to_string(), "K-D");
+    }
+
+    #[test]
+    fn validation() {
+        Card::from_str("AS").expect_err("No dash");
+        Card::from_str("A--S").expect_err("Two dash");
+        Card::from_str("1-S").expect_err("Invalid number");
+        Card::from_str("1-M").expect_err("Invalid suit");
     }
 }
