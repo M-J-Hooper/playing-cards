@@ -16,6 +16,10 @@ impl Card {
         Card { number, suit }
     }
 
+    pub fn suit(&self) -> &Suit {
+        &self.suit
+    }
+
     fn fmt_number(&self) -> String {
         match self.number {
             1 => String::from("A"),
@@ -29,7 +33,7 @@ impl Card {
 
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}-{}", self.fmt_number(), self.suit.get_initial())
+        write!(f, "{}-{}", self.fmt_number(), self.suit)
     }
 }
 
