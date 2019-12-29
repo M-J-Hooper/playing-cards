@@ -2,14 +2,16 @@ use crate::card::Card;
 use std::collections::{HashSet, hash_set};
 use std::fmt;
 
+#[derive(Debug)]
 pub struct Player {
-    id: usize,
-    hand: HashSet<Card>,
+    pub id: usize,
+    pub score: usize,
+    pub hand: HashSet<Card>,
 }
 
 impl Player {
     pub fn new(id: usize) -> Player {
-        Player { id, hand: HashSet::new() }
+        Player { id, score: 0, hand: HashSet::new() }
     }
 
     pub fn deal(&mut self, card: Card) {
@@ -36,16 +38,16 @@ impl fmt::Display for Player {
             .collect::<Vec<_>>()
             .join(", ");
         
-        write!(f, "Player {}: {}", self.id, s)
+        write!(f, "Player: id {}, score {}, cards {}", self.id, self.score, s)
     }
 }
 
-impl IntoIterator for Player {
-    type Item = Card;
-    type IntoIter = hash_set::IntoIter<Self::Item>;
+impl<'a> IntoIterator for &'a Player {
+    type Item = &'a Card;
+    type IntoIter = hash_set::Iter<'a, Card>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.hand.into_iter()
+        self.hand.iter()
     }
 }
 
@@ -71,13 +73,15 @@ mod tests {
     fn iter() {
         let mut player = Player::new(52);
         let mut deck = Deck::new();
-        for _ in 0..10 {
+        for i in 0..10 {
+            assert_eq!(player.into_iter().count(), i);
+
             let card = deck.draw().unwrap();
             player.deal(card);
         }
 
         let mut n = 0;
-        for _ in player {
+        for _ in &player {
             n += 1;
         }
         assert_eq!(n, 10);

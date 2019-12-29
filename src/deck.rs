@@ -1,6 +1,7 @@
 use crate::card::Card;
 use crate::suit::Suit;
-use std::vec;
+use crate::player::Player;
+use std::slice;
 use rand::seq::SliceRandom;
 
 pub struct Deck(Vec<Card>);
@@ -27,14 +28,23 @@ impl Deck {
     pub fn draw(&mut self) -> Option<Card> {
         self.0.pop()
     }
+
+    pub fn deal_each(&mut self, players: &mut Vec<Player>) {
+        for p in players {
+            match self.draw() {
+                Some(c) => p.deal(c),
+                None => break,
+            }
+        }
+    }
 }
 
-impl IntoIterator for Deck {
-    type Item = Card;
-    type IntoIter = vec::IntoIter<Self::Item>;
+impl<'a> IntoIterator for &'a Deck {
+    type Item = &'a Card;
+    type IntoIter = slice::Iter<'a, Card>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.0.into_iter()
+        self.0.iter()
     }
 }
 
@@ -47,10 +57,11 @@ mod test {
     fn iter() {
         let deck = Deck::new();
         let mut n = 0;
-        for _ in deck {
+        for _ in &deck {
             n += 1;
         }
         assert_eq!(n, 52);
+        assert_eq!(deck.into_iter().count(), 52);
     }
 
     #[test]

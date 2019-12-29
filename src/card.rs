@@ -1,4 +1,5 @@
 use crate::suit::Suit;
+use crate::value::Value;
 use crate::error::ParseError;
 use std::str;
 use std::fmt;
@@ -7,33 +8,36 @@ use std::hash;
 
 #[derive(Clone, Debug, cmp::Eq, cmp::PartialEq, hash::Hash)]
 pub struct Card {
-    number: usize,
+    value: Value,
     suit: Suit,
 }
 
 impl Card {
     pub fn new(number: usize, suit: Suit) -> Card {
-        Card { number, suit }
+        Card { value: Value::new(number), suit }
+    }
+
+    pub fn set(value: Value) -> Vec<Card> {
+        vec![
+            Card { value: value.clone(), suit: Suit::Hearts },
+            Card { value: value.clone(), suit: Suit::Diamonds },
+            Card { value: value.clone(), suit: Suit::Clubs },
+            Card { value: value, suit: Suit::Spades },
+        ]
     }
 
     pub fn suit(&self) -> &Suit {
         &self.suit
     }
 
-    fn fmt_number(&self) -> String {
-        match self.number {
-            1 => String::from("A"),
-            11 => String::from("J"),
-            12 => String::from("Q"),
-            13 => String::from("K"),
-            _ => self.number.to_string(),
-        }
+    pub fn value(&self) -> &Value {
+       &self.value
     }
 }
 
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}-{}", self.fmt_number(), self.suit)
+        write!(f, "{}-{}", self.value, self.suit)
     }
 }
 
@@ -43,21 +47,11 @@ impl str::FromStr for Card {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let v: Vec<&str> = s.split("-").collect();
         if v.len() != 2 {
-            Err(ParseError::new(s, "A card string must have 2 parts: suit and number"))
+            Err(ParseError::new(s, "A card string must have 2 parts: suit and value"))
         } else {
-            let n: usize = match v[0].parse() {
-                Ok(x) if x > 1 && x < 11 => x,
-                _ => match v[0] {
-                    "A" => 1,
-                    "J" => 11,
-                    "Q" => 12,
-                    "K" => 13,
-                    _ => return Err(ParseError::new(s, "Invlid face card initial")),
-                },
-            };
-
+            let value = Value::from_str(v[0])?;
             let suit = Suit::from_str(v[1])?;
-            Ok(Card::new(n, suit))
+            Ok(Card { value, suit })
         }
     }
 }
@@ -83,7 +77,7 @@ mod tests {
     fn validation() {
         Card::from_str("AS").expect_err("No dash");
         Card::from_str("A--S").expect_err("Two dash");
-        Card::from_str("1-S").expect_err("Invalid number");
+        Card::from_str("1-S").expect_err("Invalid value");
         Card::from_str("1-M").expect_err("Invalid suit");
     }
 }
