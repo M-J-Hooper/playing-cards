@@ -66,7 +66,7 @@ impl fmt::Display for Player {
             .collect::<Vec<_>>()
             .join(", ");
         
-        write!(f, "Player: id {}, score {}, cards {}", self.id, self.score, s)
+        write!(f, "Player {} with score {}: {}", self.id, self.score, s)
     }
 }
 
