@@ -1,8 +1,11 @@
 [package]
-name = "playing-cards"
+name = "card"
 version = "0.1.0"
 authors = ["Matt Hooper <matthewjhooper94@gmail.com>"]
 edition = "2018"
+homepage = "https://github.com/M-J-Hooper/playing-cards"
+description = "A simple crate for modelling card games"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
