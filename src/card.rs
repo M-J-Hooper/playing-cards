@@ -8,8 +8,8 @@ use std::hash;
 
 #[derive(Clone, Debug, cmp::Eq, cmp::PartialEq, hash::Hash)]
 pub struct Card {
-    value: Value,
-    suit: Suit,
+    pub value: Value,
+    pub suit: Suit,
 }
 
 impl Card {
@@ -17,21 +17,21 @@ impl Card {
         Card { value: Value::new(number), suit }
     }
 
-    pub fn set(value: Value) -> Vec<Card> {
+    pub fn new_set(value: &Value) -> Vec<Card> {
         vec![
             Card { value: value.clone(), suit: Suit::Hearts },
             Card { value: value.clone(), suit: Suit::Diamonds },
             Card { value: value.clone(), suit: Suit::Clubs },
-            Card { value: value, suit: Suit::Spades },
+            Card { value: value.clone(), suit: Suit::Spades },
         ]
     }
 
-    pub fn suit(&self) -> &Suit {
-        &self.suit
-    }
-
-    pub fn value(&self) -> &Value {
-       &self.value
+    pub fn new_suit(suit: &Suit) -> Vec<Card> {
+        let mut v = Vec::new();
+        for i in 1..14 {
+            v.push(Card { value: Value(i), suit: suit.clone() });
+        }
+        v
     }
 }
 

@@ -8,13 +8,11 @@ pub struct Deck(Vec<Card>);
 
 impl Deck {
     pub fn new() -> Deck {
-        let mut v: Vec<Card> = vec![];
-        for i in 1..14 {
-            v.push(Card::new(i, Suit::Hearts));
-            v.push(Card::new(i, Suit::Diamonds));
-            v.push(Card::new(i, Suit::Clubs));
-            v.push(Card::new(i, Suit::Spades));
-        }
+        let mut v: Vec<Card> = Vec::new();
+        v.extend(Card::new_suit(&Suit::Hearts));
+        v.extend(Card::new_suit(&Suit::Diamonds));
+        v.extend(Card::new_suit(&Suit::Spades));
+        v.extend(Card::new_suit(&Suit::Clubs));
 
         let mut deck = Deck(v);
         deck.shuffle();
@@ -29,13 +27,14 @@ impl Deck {
         self.0.pop()
     }
 
-    pub fn deal_each(&mut self, players: &mut Vec<Player>) {
+    pub fn deal_each(&mut self, players: &mut Vec<Player>) -> bool {
         for p in players {
             match self.draw() {
-                Some(c) => p.deal(c),
-                None => break,
+                Some(c) => p.give(c),
+                None => return false,
             }
         }
+        true
     }
 }
 

@@ -3,7 +3,7 @@ use std::str;
 use std::fmt;
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
-pub struct Value(usize);
+pub struct Value(pub usize);
 
 impl Value {
     pub fn new(number: usize) -> Value {
@@ -11,10 +11,6 @@ impl Value {
             panic!("Value must be between 1 and 13 inclusive");
         }
         Value(number)
-    }
-
-    pub fn n(&self) -> usize {
-        self.0
     }
 
     pub fn is_face(&self) -> bool {
